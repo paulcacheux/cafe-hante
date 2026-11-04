@@ -5,14 +5,14 @@
  * ========================================================= */
 const CONFIG = {
   herName: "Mon amour",          // son prénom ou petit surnom
-  fromName: "Ton futur mari",    // ta signature
+  fromName: "Ton amoureux",      // ta signature
   age: 31,
   customersPerShift: 8,
   // La boisson préférée qu'elle prépare pour le dernier client
   favoriteRecipe: ["espresso", "pumpkin", "maple", "oat", "foam", "cinnamon"],
   finalMessage:
-    "Merci. J'ai hâte de partager avec toi tous les cafés du matin, " +
-    "toutes les nuits d'Halloween et tous les pulls tricotés du monde.",
+    "Joyeux anniversaire ! Que cette nouvelle année soit douce comme un latte à l'avoine, " +
+    "chaleureuse comme un pull tricoté main, et un tout petit peu ensorcelée. 🎃",
 };
 
 /* =========================================================
@@ -66,7 +66,7 @@ const CUSTOMERS = [
 ];
 
 const FINAL_CUSTOMER = {
-  emoji: "🤵", name: "Un mystérieux inconnu",
+  emoji: "🕵️", name: "Un mystérieux inconnu",
   hello: "Je sais qu'il est tard… Une dernière boisson, s'il te plaît :",
   thanks: "Elle n'est pas pour moi… Elle est pour toi. 💜",
 };
@@ -158,7 +158,7 @@ function buildSky() {
 
 function confetti(n = 70) {
   const box = $("#confetti");
-  const bits = ["🎉", "💜", "🧡", "🍂", "☕", "✨", "🧶", "🎃", "💍"];
+  const bits = ["🎉", "💜", "🧡", "🍂", "☕", "✨", "🧶", "🎃", "🎂"];
   for (let i = 0; i < n; i++) {
     const c = document.createElement("span");
     c.className = "confetto";

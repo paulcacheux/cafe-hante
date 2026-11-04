@@ -245,7 +245,7 @@ kbd {
 .plate { width: 280px; height: 14px; border-radius: 50%; background: #e8e0f0; margin-top: -4px; }
 
 /* ---------- Final ---------- */
-.ring { font-size: 5.5rem; animation: sparkle 2s ease-in-out infinite; }
+.final-emoji { font-size: 5.5rem; animation: sparkle 2s ease-in-out infinite; }
 @keyframes sparkle { 50% { transform: scale(1.1) rotate(-6deg); filter: drop-shadow(0 0 18px #fff6c8); } }
 .card {
   background: var(--cream); color: var(--ink); border-radius: 22px; padding: 24px 22px;
