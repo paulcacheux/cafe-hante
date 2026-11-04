@@ -25,6 +25,7 @@
       <div class="howto">
         Touche les ingrédients <b>dans l'ordre</b> pour préparer chaque boisson,
         puis sers-la avant que ton client perde patience.<br>
+        Et garde tes aiguilles à portée de main : certains clients ont froid… 🧶<br>
         <small>Ici, tous les laits sont d'avoine, évidemment. 🌾</small>
       </div>
       <button class="btn" id="start">Ouvrir le café</button>
@@ -47,8 +48,24 @@
           <div class="recipe" id="recipe"></div>
         </div>
         <div class="patience" id="patience"><div class="patience-fill" id="patience-fill"></div></div>
-        <div class="customer" id="customer"></div>
+        <div class="customer-wrap">
+          <div class="customer" id="customer"></div>
+          <div class="gift" id="gift"></div>
+        </div>
         <div class="float-text" id="float-text"></div>
+      </div>
+
+      <div class="knit-mode" id="knit-mode">
+        <div class="knit-work">
+          <div class="knit-needle-bar" aria-hidden="true"></div>
+          <div class="knit-item" id="knit-item"></div>
+        </div>
+        <div class="knit-feedback" id="knit-feedback"></div>
+        <div class="knit-meter" id="knit-meter">
+          <div class="knit-zone" id="knit-zone"></div>
+          <div class="knit-cursor" id="knit-cursor">🧶</div>
+        </div>
+        <button class="btn" id="knit-btn">Tricoter ! <kbd>espace</kbd></button>
       </div>
 
       <div class="counter">

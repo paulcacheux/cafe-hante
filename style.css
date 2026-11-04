@@ -259,6 +259,70 @@ kbd {
 .confetto { position: absolute; top: -40px; animation: fall linear forwards; }
 @keyframes fall { to { transform: translateY(110vh) rotate(540deg); } }
 
+/* ---------- Gift worn by a customer ---------- */
+.customer-wrap { position: relative; margin-bottom: -14px; }
+.customer-wrap .customer { margin-bottom: 0; }
+.gift {
+  position: absolute; right: -14px; bottom: 6px; font-size: 44px;
+  opacity: 0; transform: scale(0); transition: transform .4s cubic-bezier(.3,1.8,.5,1), opacity .2s;
+}
+.gift.show { opacity: 1; transform: scale(1) rotate(-12deg); }
+
+/* ---------- Knitting ---------- */
+.knit-mode { display: none; }
+#screen-game.knitting .counter,
+#screen-game.knitting .pantry { display: none; }
+#screen-game.knitting .knit-mode {
+  position: relative; z-index: 1; width: calc(100% + 24px); margin-bottom: -12px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 14px 16px max(16px, env(safe-area-inset-bottom));
+  background: linear-gradient(var(--wood-light), var(--wood));
+  border-top: 6px solid #a8704c; box-shadow: 0 -4px 16px rgba(0,0,0,.35);
+}
+
+.knit-work { display: flex; flex-direction: column; align-items: center; min-height: 140px; }
+.knit-needle-bar {
+  width: 150px; height: 6px; border-radius: 3px; position: relative;
+  background: linear-gradient(90deg, #d8d8e0, #9fa0b0);
+}
+.knit-needle-bar::before, .knit-needle-bar::after {
+  content: ""; position: absolute; top: -3px; width: 12px; height: 12px; border-radius: 50%; background: var(--pink);
+}
+.knit-needle-bar::before { left: -6px; }
+.knit-needle-bar::after { right: -6px; }
+
+.knit-item { display: flex; flex-direction: column; width: var(--w, 60px); }
+.knit-row {
+  height: 16px; animation: knitIn .25s ease-out;
+  background:
+    linear-gradient(135deg, transparent 50%, rgba(0,0,0,.14) 50%) 0 0 / 12px 16px,
+    linear-gradient(45deg, rgba(0,0,0,.14) 50%, transparent 50%) 6px 0 / 12px 16px,
+    var(--c);
+}
+.knit-row:last-child { border-radius: 0 0 8px 8px; }
+.knit-item.shake { animation: shake .35s; }
+@keyframes knitIn { from { transform: scaleY(0); transform-origin: top; } }
+
+.knit-feedback { min-height: 1.4em; font-weight: 600; font-size: 1.1rem; }
+.knit-feedback.good { color: #b6f0cb; }
+.knit-feedback.perfect { color: #ffd166; }
+.knit-feedback.bad { color: #ffb3b3; }
+
+.knit-meter {
+  position: relative; width: 100%; height: 44px; border-radius: 22px;
+  background: rgba(0,0,0,.3); box-shadow: inset 0 2px 6px rgba(0,0,0,.4);
+}
+.knit-zone {
+  position: absolute; top: 4px; bottom: 4px; border-radius: 18px;
+  background: linear-gradient(#b6f0cb, #6fd39a); box-shadow: 0 0 12px rgba(123,228,149,.6);
+  transition: left .25s, width .25s;
+}
+.knit-cursor {
+  position: absolute; top: 50%; font-size: 30px; line-height: 1;
+  transform: translate(-50%, -50%); pointer-events: none;
+}
+#knit-btn { width: 100%; padding: 16px; font-size: 1.3rem; }
+
 /* Short screens (small phones) */
 @media (max-height: 640px) {
   .ing { min-height: 58px; }

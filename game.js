@@ -65,6 +65,20 @@ const CUSTOMERS = [
     thanks: "Parfait pour veiller jusqu'au matin !", angry: "Hou… je vais voir ailleurs." },
 ];
 
+// Commandes spéciales à tricoter (aux positions KNIT_SLOTS de la file)
+const KNIT_SLOTS = [2, 5];
+const KNIT_ITEMS = [
+  { name: "Une écharpe", emoji: "🧣", rows: 8, width: 72, colors: ["#ff8c42", "#fff4e3"],
+    ask: "Brrr… Il fait si froid ce soir. Tu pourrais me tricoter une écharpe ?",
+    thanks: "Elle est magnifique ! Je ne la quitte plus." },
+  { name: "Des mitaines", emoji: "🧤", rows: 6, width: 130, colors: ["#b07cff", "#ffc4dc"],
+    ask: "J'ai les doigts gelés… Tu me tricoterais des mitaines ?",
+    thanks: "Toutes douces ! Mes doigts te disent merci." },
+  { name: "Des chaussettes", emoji: "🧦", rows: 7, width: 100, colors: ["#ff9ecd", "#fff4e3", "#ff8c42"],
+    ask: "On m'a dit que tu tricotais des chaussettes de rêve…",
+    thanks: "Parfaites pour hanter le grenier au chaud !" },
+];
+
 const FINAL_CUSTOMER = {
   emoji: "🕵️", name: "Un mystérieux inconnu",
   hello: "Je sais qu'il est tard… Une dernière boisson, s'il te plaît :",
@@ -242,6 +256,7 @@ function startGame() {
   state.tips = 0;
   state.served = 0;
   state.current = null;
+  state.knitItems = shuffle([...KNIT_ITEMS]);
   show("screen-game");
   updateHud();
   setTimeout(nextCustomer, 400);
@@ -257,6 +272,8 @@ function pickDrink(i) {
 
 function nextCustomer() {
   if (state.index >= state.queue.length) return endShift();
+  const knitSlot = KNIT_SLOTS.indexOf(state.index);
+  if (knitSlot >= 0) return beginKnit(state.queue[state.index], state.knitItems[knitSlot % state.knitItems.length]);
   const drink = pickDrink(state.index);
   const patience = 10 + drink.recipe.length * 3 - state.index * 0.6;
   beginOrder(state.queue[state.index], drink, patience, false);
@@ -266,27 +283,139 @@ function beginOrder(customer, drink, maxPatience, finale) {
   state.current = { customer, drink, step: 0, patience: maxPatience, maxPatience, finale, mistakes: 0, done: false };
   updateHud();
   resetCup();
-
-  const el = $("#customer");
-  el.textContent = customer.emoji;
-  el.className = "customer";
-  restartAnim(el, "enter");
-
-  $("#bubble-name").textContent = customer.name;
-  $("#bubble-text").textContent = customer.hello;
+  $("#screen-game").classList.remove("knitting");
+  customerEnters(customer, customer.hello);
   $("#bubble-drink").textContent = drink.name;
   renderRecipe();
   $("#recipe").style.display = "";
-  setTimeout(() => $("#bubble").classList.add("show"), 250);
 
   $("#patience").style.visibility = finale ? "hidden" : "visible";
   $("#serve").disabled = true;
-  sfx.bell();
 
   if (!finale) {
     updatePatience();
     startTimer();
   }
+}
+
+function customerEnters(customer, line) {
+  const el = $("#customer");
+  el.textContent = customer.emoji;
+  el.className = "customer";
+  restartAnim(el, "enter");
+  $("#gift").className = "gift";
+  $("#bubble-name").textContent = customer.name;
+  $("#bubble-text").textContent = line;
+  setTimeout(() => $("#bubble").classList.add("show"), 250);
+  sfx.bell();
+}
+
+/* =========================================================
+ *  Tricot : l'aiguille fait des allers-retours,
+ *  il faut toucher quand elle est dans la zone verte.
+ * ========================================================= */
+function beginKnit(customer, item) {
+  state.current = { customer, item, knit: true, row: 0, misses: 0, perfects: 0, x: 0, dir: 1, done: false };
+  updateHud();
+  $("#screen-game").classList.add("knitting");
+  customerEnters(customer, item.ask);
+  $("#bubble-drink").textContent = `${item.emoji} ${item.name}`;
+  $("#recipe").style.display = "none";
+  $("#patience").style.visibility = "hidden";
+
+  const work = $("#knit-item");
+  work.innerHTML = "";
+  work.style.setProperty("--w", item.width + "px");
+  setKnitFeedback(`Touche quand la pelote est dans le vert ! (0/${item.rows})`, "");
+  newKnitZone();
+  startKnitLoop();
+}
+
+function newKnitZone() {
+  const c = state.current;
+  const progress = c.row / c.item.rows;
+  c.zoneW = 0.3 - progress * 0.13;
+  c.zoneC = c.zoneW / 2 + Math.random() * (1 - c.zoneW);
+  c.speed = 0.75 + progress * 0.65 + state.index * 0.03;
+  const zone = $("#knit-zone");
+  zone.style.left = `calc(22px + ${c.zoneC - c.zoneW / 2} * (100% - 44px))`;
+  zone.style.width = `calc(${c.zoneW} * (100% - 44px))`;
+}
+
+function startKnitLoop() {
+  cancelAnimationFrame(state.raf);
+  state.lastT = performance.now();
+  const cursor = $("#knit-cursor");
+  const loop = (t) => {
+    const c = state.current;
+    if (!c || !c.knit || c.done) return;
+    const dt = Math.min(0.05, (t - state.lastT) / 1000);
+    state.lastT = t;
+    c.x += c.dir * c.speed * dt;
+    if (c.x >= 1) { c.x = 1; c.dir = -1; }
+    if (c.x <= 0) { c.x = 0; c.dir = 1; }
+    cursor.style.left = `calc(22px + ${c.x} * (100% - 44px))`;
+    state.raf = requestAnimationFrame(loop);
+  };
+  state.raf = requestAnimationFrame(loop);
+}
+
+function setKnitFeedback(text, cls) {
+  const fb = $("#knit-feedback");
+  fb.textContent = text;
+  fb.className = "knit-feedback " + cls;
+}
+
+function knitTap() {
+  const c = state.current;
+  if (!c || !c.knit || c.done) return;
+  const dist = Math.abs(c.x - c.zoneC);
+
+  if (dist > c.zoneW / 2) {
+    c.misses++;
+    sfx.wrong();
+    restartAnim($("#knit-item"), "shake");
+    setKnitFeedback("Oups, une maille filée !", "bad");
+    return;
+  }
+
+  const perfect = dist <= c.zoneW / 5;
+  if (perfect) c.perfects++;
+  c.row++;
+  tone(440 + c.row * 60, 0.1, "triangle");
+  const row = document.createElement("div");
+  row.className = "knit-row";
+  row.style.setProperty("--c", c.item.colors[Math.floor((c.row - 1) / 2) % c.item.colors.length]);
+  $("#knit-item").appendChild(row);
+  setKnitFeedback(`${perfect ? "Parfait ! ✨" : "Joli !"} (${c.row}/${c.item.rows})`, perfect ? "perfect" : "good");
+
+  if (c.row >= c.item.rows) finishKnit();
+  else newKnitZone();
+}
+
+function finishKnit() {
+  const c = state.current;
+  c.done = true;
+  cancelAnimationFrame(state.raf);
+  sfx.serve();
+  setKnitFeedback("Terminé ! 🧶", "perfect");
+
+  $("#bubble-text").textContent = c.item.thanks;
+  $("#bubble-drink").textContent = "";
+  $("#customer").className = "customer happy";
+  const gift = $("#gift");
+  gift.textContent = c.item.emoji;
+  gift.classList.add("show");
+
+  const tip = Math.max(2, 4 + c.perfects - c.misses);
+  state.tips += tip;
+  state.served++;
+  updateHud();
+  const ft = $("#float-text");
+  ft.textContent = `+${tip} 🪙`;
+  restartAnim(ft, "go");
+
+  setTimeout(leave, 2200);
 }
 
 function startTimer() {
@@ -370,6 +499,7 @@ function customerGivesUp() {
 
 function leave() {
   $("#bubble").classList.remove("show");
+  $("#gift").classList.remove("show");
   $("#customer").className = "customer exit";
   setTimeout(() => {
     state.index++;
@@ -476,8 +606,15 @@ function init() {
     $("#mute").textContent = state.muted ? "🔇" : "🔊";
   });
 
+  $("#knit-btn").addEventListener("pointerdown", (e) => { e.preventDefault(); knitTap(); });
+  $("#knit-meter").addEventListener("pointerdown", knitTap);
+
   document.addEventListener("keydown", (e) => {
     if (!$("#screen-game").classList.contains("active")) return;
+    if (state.current?.knit) {
+      if (e.key === " " || e.key === "Enter") { e.preventDefault(); if (!e.repeat) knitTap(); }
+      return;
+    }
     const n = parseInt(e.key, 10);
     if (n >= 1 && n <= ING_KEYS.length) addIngredient(ING_KEYS[n - 1]);
     else if (e.key === "Enter" || e.key === " ") {
