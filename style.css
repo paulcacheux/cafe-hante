@@ -10,6 +10,7 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
+html { touch-action: manipulation; }
 
 body {
   font-family: "Fredoka", system-ui, -apple-system, sans-serif;
@@ -139,7 +140,7 @@ kbd {
 .patience { width: 60%; height: 10px; border-radius: 99px; background: rgba(255,255,255,.15); overflow: hidden; margin-top: 6px; }
 .patience-fill { height: 100%; width: 100%; background: var(--fill, #7be495); border-radius: 99px; }
 
-.customer { font-size: clamp(64px, 14vh, 110px); line-height: 1; margin-bottom: -14px; z-index: 0; }
+.customer { font-size: clamp(64px, 14vh, 110px); line-height: 1; }
 .customer.enter { animation: enter .5s ease-out both; }
 .customer.happy { animation: hop .5s ease-out 2; }
 .customer.sad { filter: grayscale(.8); transform: rotate(-8deg) translateY(6px); transition: all .4s; }
@@ -261,7 +262,6 @@ kbd {
 
 /* ---------- Gift worn by a customer ---------- */
 .customer-wrap { position: relative; margin-bottom: -14px; }
-.customer-wrap .customer { margin-bottom: 0; }
 .gift {
   position: absolute; right: -14px; bottom: 6px; font-size: 44px;
   opacity: 0; transform: scale(0); transition: transform .4s cubic-bezier(.3,1.8,.5,1), opacity .2s;

@@ -115,6 +115,7 @@ function tone(freq, dur = 0.12, type = "sine", vol = 0.12, delay = 0) {
   if (state.muted) return;
   try {
     audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
     const t = audioCtx.currentTime + delay;
     const o = audioCtx.createOscillator();
     const g = audioCtx.createGain();
@@ -141,7 +142,7 @@ const sfx = {
  *  État
  * ========================================================= */
 const state = {
-  queue: [], index: 0, tips: 0, served: 0,
+  queue: [], knitItems: [], index: 0, tips: 0, served: 0,
   current: null, muted: false, raf: 0, lastT: 0,
 };
 
@@ -257,6 +258,15 @@ function startGame() {
   state.served = 0;
   state.current = null;
   state.knitItems = shuffle([...KNIT_ITEMS]);
+  cancelAnimationFrame(state.raf);
+  // Comptoir vide en attendant le premier client (utile quand on rejoue)
+  resetCup();
+  $("#customer").textContent = "";
+  $("#bubble").classList.remove("show");
+  $("#gift").classList.remove("show");
+  $("#patience").style.visibility = "hidden";
+  $("#serve").disabled = true;
+  $("#screen-game").classList.remove("knitting");
   show("screen-game");
   updateHud();
   setTimeout(nextCustomer, 400);
