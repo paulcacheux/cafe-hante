@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1a0f2e">
+  <title>Le Café Hanté</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="sky" aria-hidden="true"><div class="moon"></div></div>
+  <div id="confetti" aria-hidden="true"></div>
+
+  <main id="app">
+    <!-- Title -->
+    <section id="screen-title" class="screen active">
+      <div class="title-emoji">🎃☕👻</div>
+      <h1>Le Café Hanté</h1>
+      <p class="subtitle">Une nuit d'Halloween derrière le comptoir</p>
+      <p class="dedication" id="dedication"></p>
+      <div class="howto">
+        Touche les ingrédients <b>dans l'ordre</b> pour préparer chaque boisson,
+        puis sers-la avant que ton client perde patience.<br>
+        <small>Ici, tous les laits sont d'avoine, évidemment. 🌾</small>
+      </div>
+      <button class="btn" id="start">Ouvrir le café</button>
+    </section>
+
+    <!-- Game -->
+    <section id="screen-game" class="screen">
+      <div class="garland" aria-hidden="true"></div>
+      <header class="hud">
+        <span id="hud-count">Client 1/8</span>
+        <span id="hud-tips">🪙 0</span>
+        <button class="mute" id="mute" aria-label="Couper le son">🔊</button>
+      </header>
+
+      <div class="stage">
+        <div class="bubble" id="bubble">
+          <div class="bubble-name" id="bubble-name"></div>
+          <div class="bubble-text" id="bubble-text"></div>
+          <div class="bubble-drink" id="bubble-drink"></div>
+          <div class="recipe" id="recipe"></div>
+        </div>
+        <div class="patience" id="patience"><div class="patience-fill" id="patience-fill"></div></div>
+        <div class="customer" id="customer"></div>
+        <div class="float-text" id="float-text"></div>
+      </div>
+
+      <div class="counter">
+        <div class="cup" id="cup">
+          <div class="steam"><span></span><span></span><span></span></div>
+          <div class="cup-body"><div class="liquid" id="liquid"></div></div>
+          <div class="cup-handle"></div>
+        </div>
+        <button class="btn serve" id="serve" disabled>Servir <kbd>⏎</kbd></button>
+      </div>
+
+      <div class="pantry" id="pantry"></div>
+    </section>
+
+    <!-- Generic message -->
+    <section id="screen-msg" class="screen">
+      <div class="msg-emoji" id="msg-emoji"></div>
+      <h2 id="msg-title"></h2>
+      <p class="msg-text" id="msg-text"></p>
+      <button class="btn" id="msg-btn"></button>
+    </section>
+
+    <!-- Birthday -->
+    <section id="screen-birthday" class="screen">
+      <h2 id="bday-title">Fais un vœu…</h2>
+      <p class="msg-text" id="bday-text">puis touche le gâteau pour souffler les bougies</p>
+      <div class="cake" id="cake" role="button" aria-label="Souffler les bougies">
+        <div class="candles" id="candles"></div>
+        <div class="tier tier-top"></div>
+        <div class="tier tier-bottom"></div>
+        <div class="plate"></div>
+      </div>
+      <button class="btn hidden" id="bday-next">Une dernière chose…</button>
+    </section>
+
+    <!-- Final -->
+    <section id="screen-final" class="screen">
+      <div class="ring">💍</div>
+      <div class="card">
+        <h2>Tu as dit oui.</h2>
+        <p id="final-text"></p>
+        <p class="signature" id="final-sign"></p>
+      </div>
+      <button class="btn btn-ghost" id="replay">Rejouer</button>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
