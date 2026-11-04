@@ -5,7 +5,7 @@
  * ========================================================= */
 const CONFIG = {
   herName: "Mon amour",          // son prénom ou petit surnom
-  fromName: "Ton amoureux",      // ta signature
+  fromName: "Ton bébé",         // ta signature
   age: 31,
   customersPerShift: 8,
   // La boisson préférée qu'elle prépare pour le dernier client
@@ -584,7 +584,7 @@ function blowCandles() {
 
 function showFinal() {
   $("#final-text").textContent = CONFIG.finalMessage;
-  $("#final-sign").textContent = `— ${CONFIG.fromName} 💜`;
+  $("#final-sign").textContent = `${CONFIG.fromName} 💜`;
   show("screen-final");
   confetti(40);
 }
